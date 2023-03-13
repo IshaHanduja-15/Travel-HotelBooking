@@ -1,0 +1,52 @@
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      FLIGHT_API:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallInHalfOpenState: 2
+        slowCallDurationThreshold: 60s
+        slidingWindowType: COUNT_BASED
+
+      HOTEL_API:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallInHalfOpenState: 2
+        slowCallDurationThreshold: 60s
+        slidingWindowType: COUNT_BASED
+
+  retry:
+    instances:
+      FLIGHT_API_RETRY:
+        registerHealthIndicator: true
+        maxRetryAttempts: 2
+        waitDuration: 2s
+        enableExponentialBackOff: true
+        exponentialBackOffMultiplier: 2
+
+    HOTEL_API_RETRY:
+      registerHealthIndicator: true
+      maxRetryAttempts: 2
+      waitDuration: 2s
+      enableExponentialBackOff: true
+      exponentialBackOffMultiplier: 2
+
+
